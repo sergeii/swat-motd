@@ -29,7 +29,7 @@ import enum eClientError from HTTP.Client;
  * MOTD package version
  * @type string
  */
-const VERSION = "1.0.0";
+const VERSION = "1.1.0-beta";
 
 /**
  * Fixed tick rate (seconds)
@@ -126,10 +126,10 @@ var protected HTTP.Client Client;
 var config bool Enabled;
 
 /**
- * MOTD source URL
- * @type string
+ * List of MOTD sources
+ * @type array<string>
  */
-var config string URL;
+var config array<string> URL;
 
 /**
  * Max number of messages that will be parsed from a http response
@@ -151,7 +151,7 @@ public function PreBeginPlay()
     {
         if (Level.Game != None && SwatGameInfo(Level.Game) != None)
         {
-            if (self.Enabled && self.URL != "")
+            if (self.Enabled && self.URL.Length > 0)
             {
                 return;
             }
@@ -167,12 +167,22 @@ public function PreBeginPlay()
  */
 public function BeginPlay()
 {
+    local int i;
+
     Super.BeginPlay();
 
-    self.Client = Spawn(class'HTTP.Client');
-    self.Client.Send(Spawn(class'Message'), self.URL, 'GET', self, 1); 
-
     log("MOTD (version " $ class'Core'.const.VERSION $ ") has been initialized");
+
+    self.Client = Spawn(class'HTTP.Client');
+    // Fetch MOTD sources
+    for (i = 0; i < self.URL.Length; i++)
+    {
+        log("Sending a GET request to " $ self.URL[i]);
+        self.Client.Send(Spawn(class'Message'), self.URL[i], 'GET', self, 1); 
+    }
+    
+    // Repeat for the whole eternity
+    self.SetTimer(class'Core'.const.DELTA, true);
 }
 
 /**
@@ -206,10 +216,6 @@ event Timer()
             continue;
         }
         self.Messages[i].LastDisplayed = Level.TimeSeconds;
-    }
-    if (self.Messages.Length == 0)
-    {
-        self.Destroy();
     }
 }
 
@@ -249,29 +255,23 @@ public function OnRequestSuccess(int StatusCode, string Response, string Hostnam
                     continue;
                 }
             }
-            log(self $ ": failed to add " $ Left(Blocks[i], 20));
+            log(self $ ": failed to parse " $ Left(Blocks[i], 20));
         }
     }
     else
     {
-        log(self $ ": " $ self.URL $ " is not available (" $ StatusCode $ ")");
+        log(self $ ": MOTD source " $ Hostname $ " is not available (" $ StatusCode $ ")");
     }
-    
-    // Repeat for the whole eternity
-    self.SetTimer(class'Core'.const.DELTA, true);
-
-    self.Client.Destroy();
 }
 
 /**
- * Destroy the instance upon a http failure
+ * Log an error upon a failure
  * 
  * @see HTTP.ClientOwner.OnRequestFailure
  */
 public function OnRequestFailure(eClientError ErrorCode, string ErrorMessage, string Hostname, int Port)
 {
-    log(self $ ": " $ Hostname $ " is not available (" $ ErrorMessage $ ")");
-    self.Destroy();
+    log(self $ ": MOTD source " $ Hostname $ " is not available (" $ ErrorMessage $ ")");
 }
 
 /**

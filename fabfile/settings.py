@@ -39,7 +39,7 @@ env.ucc = {
     'packages': (
         ('Utils', 'git@home:swat/swat-utils'),
         ('HTTP', 'git@home:swat/swat-http'),
-        ('MOTD', 'git@home:swat/swat-motd'),
+        ('MOTD', 'git@home:swat/swat-motd#origin/develop'),
     ),
 }
 
@@ -57,14 +57,24 @@ env.server = {
         ),
         '[MOTD.Core]': (
             'Enabled=True',
-            'URL=http://www.mytteam.com/motd/team',
-            'MaxMessages=2',
+            #'URL=http://www.mytteam.com/motd/team',
+            'URL=http://192.168.56.1:8000/api/motd/summary/?initial=10',
+            'URL=http://192.168.56.1:8000/api/motd/leaderboard/?initial=20',
+            # 'URL=http://192.168.56.1:8000/api/motd/leaderboard/score/?initial=20',
+            # 'URL=http://192.168.56.1:8000/api/motd/leaderboard/time/?initial=30',
+            # 'URL=http://192.168.56.1:8000/api/motd/leaderboard/spr/?initial=40',
+            # 'URL=http://192.168.56.1:8000/api/motd/leaderboard/kdr/?initial=50',
+            # 'URL=http://192.168.56.1:8000/api/motd/leaderboard/coop_score/?initial=60',
+            # 'URL=http://192.168.56.1:8000/api/motd/leaderboard/coop_time/?initial=70',
+            # 'URL=http://192.168.56.1:8000/api/motd/leaderboard/coop_wins/?initial=80',
+            # 'URL=http://192.168.56.1:8000/api/motd/leaderboard/coop_games/?initial=90',
+            #'MaxMessages=2',
         ),
     }
 }
 
 env.dist = {
-    'version': '1.0.0',
+    'version': '1.1.0-beta',
     'extra': (
         env.paths['here'].child('LICENSE'),
         env.paths['here'].child('README.html'),

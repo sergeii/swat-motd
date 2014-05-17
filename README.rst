@@ -1,7 +1,7 @@
 swat-motd
 %%%%%%%%%
 
-:Version:           1.0.0
+:Version:           1.1.0-beta
 :Home page:         https://github.com/sergeii/swat-motd
 :Author:            Sergei Khoroshilov <kh.sergei@gmail.com>
 :License:           The MIT License (http://opensource.org/licenses/MIT)
