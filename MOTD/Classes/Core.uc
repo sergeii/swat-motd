@@ -191,8 +191,8 @@ public function BeginPlay()
 event Timer()
 {
     local int i;
-
-    for (i = self.Messages.Length-1; i >= 0; i--)
+    // Display messages in the order they have been parsed
+    for (i = 0; i < self.Messages.Length; i++)
     {
         // The message has not yet been displayed
         if (self.Messages[i].LastDisplayed < 0)
@@ -209,13 +209,17 @@ event Timer()
             continue;
         }
         self.DisplayMessage(self.Messages[i].Message, self.Messages[i].Target);
-        // This message was supposed to be displayed just once
-        if (self.Messages[i].RepeatDelay == 0)
+        // Remember the last displayed time
+        self.Messages[i].LastDisplayed = Level.TimeSeconds;
+    }
+    // Handle one-time messages
+    for (i = self.Messages.Length-1; i >= 0; i--)
+    {
+        // The message has already been displayed - remove it from the list
+        if (self.Messages[i].RepeatDelay == 0 && self.Messages[i].LastDisplayed >= 0)
         {
             self.Messages.Remove(i, 1);
-            continue;
         }
-        self.Messages[i].LastDisplayed = Level.TimeSeconds;
     }
 }
 
