@@ -177,7 +177,7 @@ public function BeginPlay()
     // Fetch MOTD sources
     for (i = 0; i < self.URL.Length; i++)
     {
-        log("Sending a GET request to " $ self.URL[i]);
+        log(self $ ": fetching " $ self.URL[i]);
         self.Client.Send(Spawn(class'Message'), self.URL[i], 'GET', self, 1); 
     }
     
