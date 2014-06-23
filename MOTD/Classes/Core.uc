@@ -235,6 +235,10 @@ public function OnRequestSuccess(int StatusCode, string Response, string Hostnam
 
     if (StatusCode == 200)
     {
+        // Ensure unix-style line endings
+        Response = class'Utils.StringUtils'.static.Replace(Response, "\r\n", "\n");  // windows
+        Response = class'Utils.StringUtils'.static.Replace(Response, "\r", "\n");  // old mac
+
         Blocks = class'Utils.StringUtils'.static.Part(Response, class'Core'.const.BLOCK_DELIMITER);
 
         for (i = 0; i < Blocks.Length; i++)
