@@ -29,7 +29,7 @@ import enum eClientError from HTTP.Client;
  * MOTD package version
  * @type string
  */
-const VERSION = "1.1.0";
+const VERSION = "1.2.0";
 
 /**
  * Fixed tick rate (seconds)
